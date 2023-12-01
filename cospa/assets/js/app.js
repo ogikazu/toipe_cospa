@@ -1,19 +1,20 @@
 document.addEventListener("DOMContentLoaded", () => {
+    // 
     class ToipeCospa {
         constructor() {
-            // 新規追加項目を強調表示するための状態変数。
+            // 新規追加項目を強調表示するための状態変数
             this.newAddition = false;
-            // ランキングを表示させるDOM要素(CSSセレクタ)
+            // ランキングを表示させるDOM要素
             this.rankingSelector = "#ranking";
             // 使用するlocal storageの名前
-            this.localStorageName = "toipes";
+            this.storageName = "toipes";
             // toipes配列を初期化し、ランキングを生成する。
             this.toipesInit();
             this.makeRanking();
             // 各ボタン要素を取得
             this.sendBtn = document.querySelector(".send-button");
             this.clearBtn = document.querySelector(".clear-button");
-            // 各リスナーにハンドラを登録
+            // 各ボタンのリスナーにハンドラを登録
             this.sendBtn.addEventListener("click", () => this.sendHandler());
             this.clearBtn.addEventListener("click", () => this.clearHandler());
         }
@@ -22,43 +23,44 @@ document.addEventListener("DOMContentLoaded", () => {
             // toipeの配列を初期化
             this.toipes = [];
             // localStorageに対応するデータがあれば受け取って配列に追加
-            if (localStorage[this.localStorageName]) {
-                this.toipes = JSON.parse(localStorage[this.localStorageName]);
+            if (localStorage[this.storageName]) {
+                this.toipes = JSON.parse(localStorage[this.storageName]);
             }
         }
 
         makeRanking() {
             // toipes配列を元にランキングを生成、表示させるメソッド
+            // toipes配列が空であれば案内コメントを生成、空でなければランキングを生成する
             if (this.toipes.length === 0) {
-                // toipes配列が空であれば、案内コメントを生成
+                // toipes配列が空であれば、案内コメントを生成し、ランキング要素の子要素をそのpタグで置き換える
                 let p = document.createElement("p");
                 p.append("ここに計算結果が表示されます...");    
-                // 参照する要素の子要素を、pタグで
                 document.querySelector(this.rankingSelector).replaceChildren(p);
             } else {
                 // toipesに要素があれば、ランキングを生成
-                // データごとにliタグを作り順位等を入力、対応する削除ボタンを追加してliArrayに追加
-                // lastCospaで直前の値と比較し、コスパが同じものがあったら同立順位とする。
                 let liArray = [];
                 let lastCospa = null;
                 let rank = 1; //順位
                 // 新規追加状態の場合、一番最近のtoipeオブジェクトのインデックス番号を取得する
                 let newIndex = null;
                 if (this.newAddition) {
+                    // toipes配列から登録日の配列を作り、最新のデータを探す
                     let dateArray = this.toipes.map(toipe => Date.parse(toipe.date));
                     newIndex = dateArray.indexOf(Math.max(...dateArray));
                 }
+                // データごとにliタグを作り順位等を入力、対応する削除ボタンを追加してliArrayに追加
+                // lastCospaで直前の値と比較し、コスパが同じものがあったら同立順位とする。
                 for(let toipe of this.toipes) {
                     // toipeのインデックス番号を取得
                     let index = this.toipes.indexOf(toipe);
-                    // liの中の、左にrankDiv、真ん中にcenterDiv、右にoneClearBtnを作り
+                    // liの中のにrankDiv、centerDiv、oneClearBtnを作り
                     // centerDivの中にhedderDivとdetailDivをいれる
-                    // 後のハンドラのためliのclassとbtnのidにインデックス番号を登録
+                    // データごとに関連づけるために、liのclassとbtnのidにインデックス番号を登録
                     let li = document.createElement("li");
                         li.className = `index${index}`;
-                        // 最新のインデックス番号だった場合、CSSで強調するためクラスを追加。状態変数をfalseに
+                        // 最新のインデックス番号だった場合、CSSで強調するため_newクラスを追加。状態変数をfalseに
                         if (index === newIndex) {
-                            li.classList.add("new");
+                            li.classList.add("_new");
                             this.newAddition = false;
                         }
                     let rankDiv = document.createElement("div");
@@ -86,7 +88,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     // lastCospaを更新
                     lastCospa = toipe.cospa;
                 }
-                // 参照する要素の子要素を、lists配列を展開して置き換える
+                // ランキング要素の子要素を、lists配列を展開して置き換える
                 document.querySelector(this.rankingSelector).replaceChildren(...liArray);
                 // 各li要素の削除ボタンのリスナーにoneClearHandlerを登録
                 this.oneClearBtnList = document.querySelectorAll(".one-clear-btn");
@@ -99,20 +101,8 @@ document.addEventListener("DOMContentLoaded", () => {
         sortSaveToipes() {
             // toipes配列をcospa順にソートし、localStorageに保存するメソッド
             this.toipes.sort((a,b) => a.cospa-b.cospa);
-            let serialNum = 0;
-            this.toipes.map(toipe => toipe.serialNum = serialNum++);
             // toipes配列をシリアライズしてlocalStorageに保存
-            localStorage.setItem(this.localStorageName, JSON.stringify(this.toipes));
-        }
-
-        sanitizeString(str) {
-            // 引数の文字列をサニタイズして返すメソッド
-            return String(str)
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#x27;")
-                .replace(/`/g, "&#x60;");
+            localStorage.setItem(this.storageName, JSON.stringify(this.toipes));
         }
 
         sendHandler() {
@@ -153,6 +143,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 this.sortSaveToipes();
                 this.makeRanking();
             }
+        }
+
+        sanitizeString(str) {
+            // 引数の文字列をサニタイズして返すメソッド
+            return String(str)
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#x27;")
+                .replace(/`/g, "&#x60;");
         }
 
         clearHandler() {
