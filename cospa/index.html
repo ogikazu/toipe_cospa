@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="favicon.ico">
+  <link rel="apple-touch-icon" href="favicon.ico" >
+  <title>トイレットペーパー｜コスパ比較</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="assets/css/sanitize.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+  <section class="top-section">
+    <h1>最安トイレットペーパー</h1>
+    <p>トイレットペーパーのメートル単価を計算・比較できます。</p>  
+  </section>
+
+ 
+
+  <section class="form-section">
+    <div class="form-div">
+      <p class="form-status">各項目に入力して計算ボタンを押してください。</p>
+  
+      <form id="form" name="form">
+        
+        <ul class="form-ul">
+          <li>
+            <label for="product_name">
+              品名<input class="form-input" id="product_name" type="text" name="product_name" size="23">
+            </label>
+          </li>
+          <li>
+            <label for="price">
+              価格<input class="form-input-dt" id="price" type="number" inputmode = "decimal" name="price" size="15">円
+            </label>
+          </li>
+          <li>
+            <label for="roll">
+              巻数<input class="form-input-dt" id="roll" type="number" inputmode = "decimal" name="roll" size="15">ロール
+            </label>
+          </li>
+          <li>
+            <label for="long">
+              長さ<input class="form-input-dt" id="long" type="number" inputmode = "decimal" name="long" size="15">メートル
+            </label>
+          </li>
+        </ul>
+  
+        <div class="send-button-div">
+          <input class="button send-button" type="button" name="submit" value="計算">
+        </div>
+        
+      </form>
+  </section>
+  
+  <section class="ranking-section">
+    <h2>ランキング</h2>
+    <ul class="ranking-ul" id="ranking"></ul>
+
+    <div class="clear-button-div">
+      <button class="button clear-button" type="button">履歴消去</button>
+    </div>
+  </section>
+
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
